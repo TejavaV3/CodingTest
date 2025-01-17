@@ -7,7 +7,7 @@ public class Main {
 		if(n==1)
 			System.out.println(0);
 		else
-			System.out.println((n*n-n)/2);
+			System.out.println(n*(n-1)/2);
 
 		System.out.println(2);
 	}
