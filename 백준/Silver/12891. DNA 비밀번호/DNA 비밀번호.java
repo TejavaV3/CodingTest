@@ -1,73 +1,95 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Main {
+public class Main {
+	static int myArr[];
+	static int checkArr[];
+	static int checkSecret;
 	
-	static int[] check;
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		
+	public static void main(String[] args) throws IOException  {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
 		int S = Integer.parseInt(st.nextToken());
 		int P = Integer.parseInt(st.nextToken());
+		int Result = 0;
+		checkArr = new int[4];
+		myArr = new int[4];
+		char A[] = new char[S];
+		checkSecret = 0;
 		
-		String str = br.readLine();
-		char[] pw = new char[S];
-		int[] dnaNum = new int[4];
-		int[] currNum = new int[4];
-		check = new int[4];
-		int result=0;
-		
-		for(int i=0;i<S;i++) { 
-			pw[i] = str.charAt(i);
-			if(pw[i] == 'A') dnaNum[0]++;
-			if(pw[i]=='C') dnaNum[1]++;
-			if(pw[i]=='G') dnaNum[2]++;
-			if(pw[i]=='T') dnaNum[3]++;
+		A = bf.readLine().toCharArray();
+		st = new StringTokenizer(bf.readLine());
+		for(int i=0; i<4; i++) {
+			checkArr[i] = Integer.parseInt(st.nextToken());
+			if(checkArr[i] == 0) {
+				checkSecret++;
+			}
 		}
-		
-		st = new StringTokenizer(br.readLine());
-		for(int i=0;i<4;i++) {
-			check[i] = Integer.parseInt(st.nextToken());
+		for(int i=0; i<P; i++) { //부분문자열 처음 받을때 세팅
+			Add(A[i]);
 		}
-		
-		if(!checkNum(dnaNum)) {
-			System.out.print(result);
-			return;
+		if(checkSecret == 4) {
+			Result++;
 		}
-		
-		for(int i=0;i<P;i++) {
-			if(pw[i] == 'A') currNum[0]++;
-			if(pw[i]=='C') currNum[1]++;
-			if(pw[i]=='G') currNum[2]++;
-			if(pw[i]=='T') currNum[3]++;
+		//슬라이딩 윈도우
+		for(int i=P; i<S; i++) {
+			int j = i-P;
+			Add(A[i]);
+			Remove(A[j]);
+			if(checkSecret == 4) {
+				Result++;
+			}
 		}
-		if(checkNum(currNum)) result++;
-		
-		for(int j=P;j<S;j++) { 
-			int i=j-P; 
-			
-			if(pw[i]=='A') currNum[0]--;
-			if(pw[i]=='C') currNum[1]--;
-			if(pw[i]=='G') currNum[2]--;
-			if(pw[i]=='T') currNum[3]--;
-			
-			if(pw[j]=='A') currNum[0]++;
-			if(pw[j]=='C') currNum[1]++;
-			if(pw[j]=='G') currNum[2]++;
-			if(pw[j]=='T') currNum[3]++;
-			
-			if(checkNum(currNum)) result++;
-		}
-		
-		System.out.print(result);
+		System.out.println(Result);
+		bf.close();
 	}
-	
-	public static boolean checkNum(int[] num) {
-		for(int i=0;i<4;i++) {
-			if(num[i] < check[i])
-				return false;
+
+	private static void Remove(char c) {
+		switch(c){
+		case 'A':
+			if(myArr[0] == checkArr[0]) 
+				checkSecret--; myArr[0]--; break;
+			
+		case 'C': 
+			if(myArr[1] == checkArr[1]) 
+				checkSecret--; myArr[1]--; break;
+			
+		case 'G':
+			if(myArr[2] == checkArr[2]) 
+				checkSecret--; myArr[2]--; break;
+			
+		case 'T':
+			if(myArr[3] == checkArr[3]) 
+				checkSecret--; myArr[3]--; break;
+			
 		}
-		return true;
 	}
+
+	private static void Add(char c) {
+		switch(c){
+		case 'A':
+			myArr[0]++;
+			if(myArr[0] == checkArr[0]) 
+				checkSecret++; break;
+			
+		case 'C':
+			myArr[1]++;
+			if(myArr[1] == checkArr[1]) 
+				checkSecret++; break;
+			
+		case 'G':
+			myArr[2]++;
+			if(myArr[2] == checkArr[2]) 
+				checkSecret++; break;
+			
+		case 'T':
+			myArr[3]++;
+			if(myArr[3] == checkArr[3]) 
+				checkSecret++; break;
+			
+		}
+	}
+
 }
